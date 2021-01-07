@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.3.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>tech.portal.firebase</groupId>
+    <artifactId>todo-list</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>todo-list</name>
+    <description>Demo project for Spring Boot run at Firebase</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+
+        <swagger-core.version>1.6.1</swagger-core.version> <!-- swagger - генерация док-ии к RestApi -->
+
+        <junit.jupiter.version>5.6.2</junit.jupiter.version> <!-- junit - тесты -->
+        <junit.platform.runner.version>1.6.2</junit.platform.runner.version>
+
+        <lombok.plugin.version>1.18.12.0</lombok.plugin.version>
+        <lombok.version>1.18.12</lombok.version>
+        <mockito.version>3.3.3</mockito.version>
+
+        <!-- то, что касается openapi генерации кода -->
+        <openapi.generator.maven.plugin.version>4.3.0</openapi.generator.maven.plugin.version>
+        <feign.version>11.0</feign.version>
+        <feign-form.version>3.8.0</feign-form.version>
+
+        <!-- ds -->
+        <jackson.version>2.11.0</jackson.version>
+        <ojdbc7.version>12.1.0.2</ojdbc7.version>
+        <jsr.version>3.0.2</jsr.version> <!-- findbugs, проверки Nonnull -->
+
+        <code.package.base>tech.portal.mirror.makeup.dev</code.package.base> <!-- Базовый пакет для любого модуля -->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+        <dependency> <!-- spring-boot: actuator -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <!-- моки для тестов -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- некоторые проверки кода: Nonnull и т.д. -->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${jsr.version}</version>
+        </dependency>
+
+        <!-- lombok - удобные сокращения в java-code -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!-- scope>provided</scope -->
+        </dependency>
+
+
+        <!-- swagger - создание док-ии по Rest-Api -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- Openapi, генерирует RestController/endpoint и классы model для взаимодействия с этим endpoint -->
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>${openapi.generator.maven.plugin.version}</version>
+                    <!-- Здесь настраиваем plugin, но его подключение к maven-phase - производим в самих модулях -->
+                    <executions>
+                        <execution>
+                            <!-- Генерация классов модели. Указываем все параметры - кроме goal -->
+                            <id>openapi-service-model-v1</id>
+                            <configuration>
+                                <inputSpec>${project.basedir}/src/main/resources/openapi_v1.yaml</inputSpec>
+                                <basePackage>${code.package.base}</basePackage>
+                                <generateApis>false</generateApis>
+                                <modelPackage>${code.package.base}.model.v1</modelPackage>
+                                <modelNameSuffix>Pojo</modelNameSuffix>
+                                <generatorName>java</generatorName>
+                                <library>feign</library>
+                                <generateApis>false</generateApis>
+                                <generateModels>true</generateModels>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <!-- Генерация классов модели. Указываем все параметры - кроме goal -->
+                            <id>openapi-service-controller-v1</id>
+                            <configuration>
+                                <inputSpec>${project.basedir}/src/main/resources/openapi_v1.yaml</inputSpec>
+                                <basePackage>${code.package.base}</basePackage>
+                                <modelPackage>${code.package.base}.model.v1</modelPackage>
+                                <apiPackage>${code.package.base}.api.v1</apiPackage>
+                                <modelNameSuffix>Pojo</modelNameSuffix>
+                                <generatorName>spring</generatorName>
+                                <generateApis>true</generateApis>
+                                <generateModels>false</generateModels>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <!-- Конфигурация, общая для всех execution -->
+                        <!-- inputSpec>${project.basedir}/../src/main/resources/openapi.yml</inputSpec -->
+                        <generateModelTests>false</generateModelTests>
+                        <!-- generateSupportingFiles>false</generateSupportingFiles -->
+                        <removeOperationIdPrefix>true</removeOperationIdPrefix>
+
+                        <output>${project.build.directory}/generated-sources/openapi</output>
+                        <!-- modelPackage>${code.package.base}.${module.name}.model</modelPackage -->
+                        <!-- apiPackage>${code.package.base}.${module.name}.api</apiPackage -->
+                        <!-- apiPackage>${code.package.base}.api</apiPackage -->
+                        <generateSupportingFiles>true</generateSupportingFiles>
+                        <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                        <configOptions>
+                            <dateLibrary>java8</dateLibrary>
+                            <java8>true</java8>
+                            <reactive>false</reactive>
+                            <interfaceOnly>true</interfaceOnly>
+                            <delegatePattern>true</delegatePattern>
+                            <!-- basePackage>${code.package.base}.${module.name}</basePackage -->
+                            <!-- basePackage>${code.package.base}</basePackage -->
+                        </configOptions>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>${lombok.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>openapi-service-model-v1</id>
+                        <goals><!-- Указываем, на какие maven-goal подключать plugin в действие -->
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>openapi-service-controller-v1</id>
+                        <goals><!-- Указываем, на какие maven-goal подключать plugin в действие -->
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>openapi_v1.yml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+</project>
