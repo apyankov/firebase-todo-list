@@ -9,18 +9,21 @@ import tech.portal.mirror.makeup.dev.model.v1.BrandPojo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 @RestController
 @RequestMapping()
-@AllArgsConstructor
+//@AllArgsConstructor
 public class MakeupApiImpl implements RestApiApi {
+
+    private Random tokenGenerator = new Random(4567);
 
     @Override
     public ResponseEntity<List<BrandPojo>> searchBrands() {
         BrandPojo brand1 = new BrandPojo();
         brand1.setId(12L);
-        brand1.setName("Maybelline");
+        brand1.setName("Maybelline, random: " + tokenGenerator.nextInt() % 1000);
 
         List<BrandPojo> result = new ArrayList<>();
         result.add(brand1);
