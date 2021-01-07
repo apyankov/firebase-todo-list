@@ -24,6 +24,8 @@ public class MakeupApiImpl implements RestApiApi {
         BrandPojo brand1 = new BrandPojo();
         brand1.setId(12L);
         brand1.setName("Maybelline, random: " + tokenGenerator.nextInt() % 1000);
+        brand1.setSmallImage("https://todo-list-dev.web.app/images/brands/maybelline.png");
+        brand1.setSortPriority(10);
 
         List<BrandPojo> result = new ArrayList<>();
         result.add(brand1);

@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: "3.0.0"
 info:
   description: Backend for Makeup-mirror Android App
   version: "1.0.0"
@@ -109,3 +109,10 @@ components:
           format: int64
         name:
           type: string
+        small_image:
+          type: string
+        sort_priority:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 1000
