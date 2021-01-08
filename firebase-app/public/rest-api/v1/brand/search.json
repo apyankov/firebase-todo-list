@@ -1,0 +1,14 @@
+[
+{
+"id": 22,
+"name": "Maybelline",
+"small_image": "https://todo-list-dev.web.app/images/brands/maybelline.png",
+"sort_priority": 10
+},
+{
+"id": 23,
+"name": "Stellary",
+"small_image": "https://todo-list-dev.web.app/images/brands/stellary.jpg",
+"sort_priority": 12
+}
+]
