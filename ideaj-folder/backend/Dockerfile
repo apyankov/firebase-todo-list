@@ -18,7 +18,7 @@ RUN mvn package -DskipTests
 FROM adoptopenjdk/openjdk11:alpine-slim
 
 # Copy the jar to the production image from the builder stage.
-COPY --from=builder /app/target/makeup-backend-*.jar /todo-list.jar
+COPY --from=builder /app/target/makeup-backend-*.jar /makeup-backend.jar
 
 # Run the web service on container startup.
-CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/todo-list.jar"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/makeup-backend.jar"]

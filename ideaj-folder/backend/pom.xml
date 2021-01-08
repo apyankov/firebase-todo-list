@@ -11,10 +11,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>tech.portal.firebase</groupId>
-    <artifactId>todo-list</artifactId>
+    <artifactId>makeup-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>todo-list</name>
-    <description>Demo project for Spring Boot run at Firebase</description>
+    <name>makeup-backend</name>
+    <description>Backend for Makeup-mirror, impl for Spring Boot run at GCP:CloudRun</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
